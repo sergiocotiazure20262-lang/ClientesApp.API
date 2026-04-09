@@ -7,7 +7,7 @@ namespace ClientesApp.API.Repositories
     /// <summary>
     /// Classe de repositório de dados para cliente.
     /// </summary>
-    public class ClienteRepository : BaseRepository<Cliente>
+    public class ClienteRepository(DataContext dataContext) : BaseRepository<Cliente>(dataContext)
     {
         /// <summary>
         /// Método para consultar 1 cliente baseado no id
@@ -15,13 +15,10 @@ namespace ClientesApp.API.Repositories
         /// </summary>
         public override Cliente? GetById(Guid id)
         {
-            using (var dataContext = new DataContext())
-            {
-                return dataContext
-                        .Set<Cliente>() //Consulta de Cliente
-                        .Include(c => c.Enderecos) //Incluir os endereços associados
-                        .FirstOrDefault(c => c.Id == id); //Filtrando pelo id
-            }
+            return dataContext
+                    .Set<Cliente>() //Consulta de Cliente
+                    .Include(c => c.Enderecos) //Incluir os endereços associados
+                    .FirstOrDefault(c => c.Id == id); //Filtrando pelo id
         }
 
         /// <summary>
@@ -30,15 +27,12 @@ namespace ClientesApp.API.Repositories
         /// </summary>
         public List<Cliente> GetAllByNome(string nome)
         {
-            using (var dataContext = new DataContext())
-            {
-                return dataContext
-                        .Set<Cliente>() //Consulta de Cliente
-                        .Include(c => c.Enderecos) //Incluir os endereços associados
-                        .Where(c => c.Nome.Contains(nome)) //Filtrar pelo nome
-                        .OrderBy(c => c.Nome) //Ordenar por nome
-                        .ToList(); //Retornar como lista
-            }
+            return dataContext
+                    .Set<Cliente>() //Consulta de Cliente
+                    .Include(c => c.Enderecos) //Incluir os endereços associados
+                    .Where(c => c.Nome.Contains(nome)) //Filtrar pelo nome
+                    .OrderBy(c => c.Nome) //Ordenar por nome
+                    .ToList(); //Retornar como lista
         }
     }
 }

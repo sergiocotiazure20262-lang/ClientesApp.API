@@ -1,3 +1,4 @@
+using ClientesApp.API.Extensions;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,9 @@ builder.Services.AddCors(options => {
     });
 });
 
+//Injeções de dependência
+builder.Services.AddDependencyInjection();
+
 var app = builder.Build();
 
 //Habilitando o Swagger
@@ -32,10 +36,7 @@ app.UseSwaggerUI(); //Swagger
 app.MapScalarApiReference(s => s.WithTheme(ScalarTheme.BluePlanet));
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+app.MapOpenApi();
 
 //Habilitando a política de CORS
 app.UseCors("AllowAll");

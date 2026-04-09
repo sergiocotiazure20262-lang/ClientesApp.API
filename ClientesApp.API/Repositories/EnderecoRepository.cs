@@ -1,11 +1,9 @@
-﻿using ClientesApp.API.Entities;
+﻿using ClientesApp.API.Contexts;
+using ClientesApp.API.Entities;
 
 namespace ClientesApp.API.Repositories
 {
-    /// <summary>
-    /// Classe de repositório de dados para Endereço.
-    /// </summary>
-    public class EnderecoRepository : BaseRepository<Endereco>
+    public class EnderecoRepository (DataContext dataContext) : BaseRepository<Endereco>(dataContext)
     {
 
     }

@@ -7,14 +7,14 @@ namespace ClientesApp.API.Contexts
     /// Classe de contexto de dados para a aplicação ClientesApp
     /// E definição da conexão com o banco de dados.
     /// </summary>
-    public class DataContext : DbContext
+    public class DataContext (IConfiguration configuration) : DbContext
     {
         /// <summary>
         /// Método para mapear a conexão com o banco de dados SQL Server.
         /// </summary>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=ClientesApp;Integrated Security=True;");
+            optionsBuilder.UseSqlServer(configuration.GetConnectionString("ClientesApp"));
         }
 
         /// <summary>

@@ -10,19 +10,8 @@ namespace ClientesApp.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ClientesController : ControllerBase
+    public class ClientesController (ClienteRepository clienteRepository, EnderecoRepository enderecoRepository) : ControllerBase
     {
-        //Atributos
-        private readonly ClienteRepository _clienteRepository;
-        private readonly EnderecoRepository _enderecoRepository;
-
-        //Método construtor -> ctor + tab
-        public ClientesController()
-        {
-            _clienteRepository = new ClienteRepository(); //Instanciando
-            _enderecoRepository = new EnderecoRepository(); //Instanciando
-        }
-
         [HttpPost]
         [ProducesResponseType(typeof(ClienteResponseDto), 201)]
         public IActionResult Post([FromBody] ClienteRequestDto request)
@@ -50,7 +39,7 @@ namespace ClientesApp.API.Controllers
                 };
 
                 //Salvar o cliente no banco de dados
-                _clienteRepository.Add(cliente);
+                clienteRepository.Add(cliente);
 
                 #endregion
 
@@ -73,7 +62,7 @@ namespace ClientesApp.API.Controllers
                     };
 
                     //Salvar o endereço no banco de dados
-                    _enderecoRepository.Add(endereco);
+                    enderecoRepository.Add(endereco);
 
                     //Adicionar o endereço ao cliente
                     cliente.Enderecos.Add(endereco);
@@ -102,7 +91,7 @@ namespace ClientesApp.API.Controllers
             try
             {
                 //buscar o cliente no banco de dados através do ID
-                var cliente = _clienteRepository.GetById(id);
+                var cliente = clienteRepository.GetById(id);
 
                 //Verificar se o cliente não foi encontrado
                 if (cliente == null)
@@ -115,7 +104,7 @@ namespace ClientesApp.API.Controllers
                 cliente.Telefone = request.Telefone;
 
                 //Atualizando o cliente no banco de dados
-                _clienteRepository.Update(cliente);
+                clienteRepository.Update(cliente);
 
                 //Percorrendo os endereços do cliente enviado na edição
                 for (int i = 0; i < request.Enderecos.Count; i++)
@@ -131,7 +120,7 @@ namespace ClientesApp.API.Controllers
                     endereco?.Cep = request.Enderecos[i].Cep;
 
                     //atualizando os dados do endereço no banco
-                    _enderecoRepository.Update(endereco);
+                    enderecoRepository.Update(endereco);
                 }
 
                 //Retornar sucesso HTTP 200 (OK)
@@ -155,7 +144,7 @@ namespace ClientesApp.API.Controllers
             try
             {
                 //buscar o cliente no banco de dados através do ID
-                var cliente = _clienteRepository.GetById(id);
+                var cliente = clienteRepository.GetById(id);
 
                 //Verificar se o cliente não foi encontrado
                 if (cliente == null)
@@ -163,10 +152,10 @@ namespace ClientesApp.API.Controllers
 
                 //Excluir os endereços do cliente
                 foreach (var item in cliente.Enderecos.ToList())
-                    _enderecoRepository.Delete(item);
+                    enderecoRepository.Delete(item);
 
                 //Excluir o cliente
-                _clienteRepository.Delete(cliente);
+                clienteRepository.Delete(cliente);
 
                 //Retornar sucesso HTTP 200 (OK)
                 return StatusCode(200, MapToDto(cliente));
@@ -189,7 +178,7 @@ namespace ClientesApp.API.Controllers
             try
             {
                 //buscar o cliente no banco de dados através do ID
-                var cliente = _clienteRepository.GetById(id);
+                var cliente = clienteRepository.GetById(id);
 
                 //Verificar se o cliente não foi encontrado
                 if (cliente == null)
@@ -220,7 +209,7 @@ namespace ClientesApp.API.Controllers
                     throw new ApplicationException("O nome deve conter pelo menos 3 caracteres.");
 
                 //Consultar os clientes no repositório
-                var clientes = _clienteRepository.GetAllByNome(nome.Trim());
+                var clientes = clienteRepository.GetAllByNome(nome.Trim());
 
                 //Verificar se nenhum cliente foi encontrado
                 if (clientes == null || !clientes.Any())
